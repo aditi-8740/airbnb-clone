@@ -12,6 +12,7 @@ const bcryptSalt = bcrypt.genSaltSync(7);
 const cookieParser = require('cookie-parser')
 const multer = require('multer')
 const path = require('node:path')
+const {checkForAuthenticationCookie} = require('./middlewares/authentication');
 
 app.use(express.json())
 app.use(cookieParser())
@@ -29,10 +30,7 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopol
   .catch((err) => console.log("MongoDB connection error: ", err));
 
 
-app.get('/test' , (req,res)=>{
-    res.json('test ok');
-})
-
+app.use(checkForAuthenticationCookie)
 app.post('/register', async (req,res)=>{
     const {name, email, password} = req.body;
 
@@ -68,17 +66,10 @@ app.post('/login', async (req,res)=>{
 })
 
 app.get('/profile',  (req,res)=>{
-    const {token} = req.cookies;
-    if (token) {
-        jwt.verify(token, process.env.PRIVATE_KEY ,function(err, decoded) {  //or can make DataBase Req to find user with decoded.id
-            try{
-                return res.status(200).json(decoded)
-            }catch(err){
-                console.log(err);
-            }
-          })
+    if (req.user) {
+        return res.status(200).json(user)
     }else{
-        res.json(null)
+        return res.status(401).json(null)
     }
 
 })
@@ -118,60 +109,50 @@ app.post('/places', async (req,res)=>{
     const { title, address,addedPhotos, description, perks, addInfo, checkIn, checkOut, maxGuests, pricePerNight
     } = req.body;           console.log(req.body);
     
-    const {token} = req.cookies;
-    const user =  jwt.verify(token, process.env.PRIVATE_KEY ,function(err, decoded) {
-        if (err) {
-            console.log("JWT Verification Error:", err);
-            return res.status(401).json({ error: "Invalid Token" });
-          }
-          return decoded;
-    })
+    if(req.user){
+        const createdPlace = await PLACE.create({
+           owner: user.id ,
+           title,
+           address,
+           photos: addedPhotos,
+           description,
+           perks,
+           extraInfo:addInfo,
+           checkIn,
+           checkOut,
+           maxGuests,
+           pricePerNight
+         })
+        return res.json(createdPlace);
+    }else{
+        return res.status(401).json("Invalid login credentials. Please try again.")
+    }
 
-     const createdPlace = await PLACE.create({
-        owner: user.id ,
-        title,
-        address,
-        photos: addedPhotos,
-        description,
-        perks,
-        extraInfo:addInfo,
-        checkIn,
-        checkOut,
-        maxGuests,
-        pricePerNight
-      })
-      res.json(createdPlace);
 })
 
-app.get('/user-places',async (req,res)=>{
-    const {token} = req.cookies;
-    const {id} =  jwt.verify(token, process.env.PRIVATE_KEY ,function(err, decoded) {
-        if (err) {
-            console.log("JWT Verification Error:", err);
-            return res.status(401).json({ error: "Invalid Token" });
-          }
-          return decoded;   //decoded is payload in token, contains user info
-    })
-    const placesList = await PLACE.find({owner: id})
-    return res.status(200).json(placesList);
+app.get('/user-places',async (req,res)=>{   //My accomodations
+    if (req.user) {
+        const placesList = await PLACE.find({owner: req.user.id})
+        return res.status(200).json(placesList);
+    }else{
+        return res.status(401).json("User is not authenticated. Please log in to access this resource.")
+    } 
+   
 })
 
 app.put('/places/:id', async (req,res)=>{
     const id = req.params.id;
     const {title, address, addedPhotos, description, perks, addInfo, checkIn, checkOut, maxGuests, pricePerNight } = req.body ;
-    const {token} = req.cookies;
-    jwt.verify(token, process.env.PRIVATE_KEY ,function(err, decoded) {
-        if (err) {
-            console.log("JWT Verification Error:", err);
-            return res.status(401).json({ error: "Invalid Token" });
-          }
-    })
-
-    const updatedPlace = await PLACE.findByIdAndUpdate(id ,  {
-        title, address, photos:addedPhotos, description, perks, extraInfo:addInfo, checkIn, checkOut, maxGuests ,pricePerNight
-    },{ new:true })
-
-    return res.status(200).json(updatedPlace)
+    
+    if (req.user) {
+        const updatedPlace = await PLACE.findByIdAndUpdate(id ,  {
+            title, address, photos:addedPhotos, description, perks, extraInfo:addInfo, checkIn, checkOut, maxGuests ,pricePerNight
+        },{ new:true })
+        return res.status(200).json(updatedPlace)
+    
+    }else{
+        return res.status(401).json("User is not authenticated. Please log in to access this resource.")
+    } 
 
 })
 
@@ -186,49 +167,44 @@ app.get('/places', async (req,res)=>{
 })
 
 app.get('/bookings',async (req,res)=>{    //all bookings done by user
-    const {token} = req.cookies;
-    const user =  jwt.verify(token, process.env.PRIVATE_KEY ,function(err, decoded) {
-        if (err) {
-            console.log("JWT Verification Error:", err);
-            return res.status(401).json({ error: "Invalid Token" });
-          }
-          return decoded;   //decoded is payload in token, contains user info
-    })
-    const allBookings = await BOOKING.find({bookedBy: user.id}).populate("place") //returns array of booking objects
-    return res.json(allBookings)
+    if (req.user) {
+        const allBookings = await BOOKING.find({bookedBy: req.user.id}).populate("place") //returns array of booking objects
+        return res.json(allBookings)
+    
+    }else{
+        return res.status(401).json("User is not authenticated. Please log in to access this resource.")
+    } 
 
 })
 
 app.post('/bookings', async (req,res)=>{    //CREATE BOOKING
-    const {token} = req.cookies;
-    const user =  jwt.verify(token, process.env.PRIVATE_KEY ,function(err, decoded) {
-        if (err) {
-            console.log("JWT Verification Error:", err);
-            return res.status(401).json({ error: "Invalid Token" });
-          }
-          return decoded;   //decoded is payload in token, contains user info
-    })
-    
-    const { place, checkIn, checkOut ,numberOfGuests , fullName, phoneNumber, price } = req.body
-    try {
+    if (req.user) {
+        const { place, checkIn, checkOut ,numberOfGuests , fullName, phoneNumber, price } = req.body
         const createdBooking = await BOOKING.create({
-            bookedBy: user.id, place, checkIn, checkOut ,numberOfGuests , fullName, phoneNumber, price 
+            bookedBy: req.user.id, place, checkIn, checkOut ,numberOfGuests , fullName, phoneNumber, price 
         })
         return res.status(201).json(createdBooking)
-    } catch (error) {
-        throw error
+    
+    }else{
+        return res.status(401).json("User is not authenticated. Please log in to access this resource.")
     }
 })
 
 app.get('/account/bookings/:id', async(req,res)=>{
-    const id = req.params.id;
-    const foundBooking = await BOOKING.findById(id).populate('place')
-    if(foundBooking){
-        return res.status(200).json(foundBooking)
+    if (req.user) {
+        const id = req.params.id;
+        const foundBooking = await BOOKING.findById(id).populate('place')
+        if(foundBooking){
+            return res.status(200).json(foundBooking)
+        }
+        else{
+            return res.status(404).json('The booking with the specified ID does not exist.')
+        }
+    
+    }else{
+        return res.status(401).json("User is not authenticated. Please log in to access this resource.")
     }
-    else{
-        return res.status(204).json('No Booking Found')
-    }
+    
 })
 
 // rtFPf6ArVXpA3rNg
