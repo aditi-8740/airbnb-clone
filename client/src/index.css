@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+input[type="text"],input[type="email"] , input[type="password"], textarea {
+    @apply w-full border m-2 ml-0 px-2 py-1 rounded-xl
+}
+input[type="number"]{
+    @apply border m-2 ml-0 px-2 py-1 rounded-xl
+}
+input[type="checkbox"]{
+    @apply h-5 w-5
+}
+.button-primary{
+    background-color: #ff385c;
+    color: white;
+    @apply w-full m-2 ml-0 px-2 py-1 rounded-xl
+}
+.bg-primary{
+    background-color: #ff385c;
+}
+/* https://tailwindcss.com/docs/guides/vite */
