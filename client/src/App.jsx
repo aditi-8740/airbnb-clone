@@ -13,7 +13,7 @@ import PlacesForm from './Components/PlacesForm.jsx';
 import PlacePage from './Pages/PlacePage.jsx';
 import EachBookingPage from './Pages/EachBookingPage.jsx';
 
-axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+axios.defaults.baseURL = 'https://airbnb-clone-api-lemon.vercel.app/?vercelToolbarCode=hIgb17Fb-PB4iKN';
 
 function App() {
   const router = createBrowserRouter([    //returns a router object, which defines all the routes for your app.
