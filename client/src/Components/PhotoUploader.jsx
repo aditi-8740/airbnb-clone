@@ -35,29 +35,29 @@ const PhotoUploader = ({addedPhotos , setaddedPhotos}) => {
 
   function handleRemovePhoto ( removedPhoto ) {
     setaddedPhotos( addedPhotos.filter((photo)=>{
-      return photo.filename !== removedPhoto.filename
+      return photo !== removedPhoto
     }) )
   }
 
   function handleSetAsCoverPhoto( starPhoto ) { 
     setaddedPhotos([ starPhoto , ...addedPhotos.filter((photo)=>{
-      return photo.filename !== starPhoto.filename
+      return photo !== starPhoto
     }) ] );
 
     // 2nd way:
-    // const unselectedPhotos = addedPhotos.filter((photo)=>{ return photo.filename !== starPhoto.filename })
+    // const unselectedPhotos = addedPhotos.filter((photo)=>{ return photo !== starPhoto })
     // unselectedPhotos.unshift(starPhoto)
     // setaddedPhotos( unselectedPhotos  )
   }
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
-      {addedPhotos.length > 0 && addedPhotos.map((photo) => {
+      {addedPhotos.length > 0 && addedPhotos.map((photo, index) => {
           return (
-            <div className="md:text-xl my-2 relative" key={photo.filename} >
+            <div className="md:text-xl my-2 relative" key={index} >
               <img
                 className="w-full h-32 rounded-2xl object-cover cursor-pointer"
-                src={`http://localhost:8000/uploads/${photo.filename}`}
+                src={photo}
               />
               <button type="button" onClick={()=> handleRemovePhoto(photo)} className="absolute bottom-2 right-1.5 bg-black/50 p-2 rounded-full hover:bg-black/80 ">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="size-6">
@@ -66,7 +66,7 @@ const PhotoUploader = ({addedPhotos , setaddedPhotos}) => {
               </button>
 
               <button type="button" onClick={()=> handleSetAsCoverPhoto(photo)} className="absolute bottom-2 left-1.5 bg-black/50 p-2 rounded-full hover:bg-black/80 ">
-                { photo.filename  == addedPhotos[0].filename ?
+                { photo  == addedPhotos[0] ?
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="size-6">
                     <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
                   </svg>

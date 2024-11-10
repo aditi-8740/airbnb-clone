@@ -21,7 +21,7 @@ const BookingsPage = () => {
                 <div className="mr-5 max-w-44 max-h-44 flex-grow shrink-0 ">
                 {booking.place.photos.length > 0 && (
                     <img
-                      src={`http://localhost:8000/uploads/${booking.place.photos[0].filename}`}
+                      src={booking.place.photos[0]}
                       alt="bookings photos"
                       className="rounded-xl"
                     />

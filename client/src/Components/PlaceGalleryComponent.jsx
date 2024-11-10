@@ -11,7 +11,7 @@ const PlaceGalleryComponent = ({ place , setshowAllPhotos}) => {
               <img
                 alt="gallery"
                 className="w-full h-full object-cover object-center block lg:rounded-l-xl md:rounded-r-none rounded-xl "
-                src={`http://localhost:8000/uploads/${place.photos[0].filename}`}
+                src={place.photos[0]}
               />
             )}
           </div>
@@ -24,7 +24,7 @@ const PlaceGalleryComponent = ({ place , setshowAllPhotos}) => {
               <img
                 alt="gallery"
                 className="w-full h-full object-cover object-center block "
-                src={`http://localhost:8000/uploads/${place.photos[1].filename}`}
+                src={place.photos[1]}
               />
             )}
           </div>
@@ -33,7 +33,7 @@ const PlaceGalleryComponent = ({ place , setshowAllPhotos}) => {
               <img
                 alt="gallery"
                 className="w-full h-full object-cover object-center block rounded-tr-xl"
-                src={`http://localhost:8000/uploads/${place.photos[2].filename}`}
+                src={place.photos[2]}
               />
             )}
           </div>
@@ -42,7 +42,7 @@ const PlaceGalleryComponent = ({ place , setshowAllPhotos}) => {
               <img
                 alt="gallery"
                 className="w-full h-full object-cover object-center block "
-                src={`http://localhost:8000/uploads/${place.photos[3].filename}`}
+                src={place.photos[3]}
               />
             )}
           </div>
@@ -51,7 +51,7 @@ const PlaceGalleryComponent = ({ place , setshowAllPhotos}) => {
               <img
                 alt="gallery"
                 className="w-full h-full object-cover object-center block rounded-br-xl"
-                src={`http://localhost:8000/uploads/${place.photos[4].filename}`}
+                src={place.photos[4]}
               />
             )}
           </div>

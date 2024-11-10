@@ -28,12 +28,12 @@ const PhotoPopUp = ({place , setshowAllPhotos}) => {
     
             <div className="flex flex-col gap-4 my-32 w-4/6 mx-auto">
               {place.photos.length > 0 &&
-                place.photos.map((photo) => (
+                place.photos.map((photo,index) => (
                   <img
-                    key={photo.filename}
+                    key={index}
                     className="w-full h-full"
                     alt="gallery"
-                    src={`http://localhost:8000/uploads/${photo.filename}`}
+                    src={photo}
                   />
                 ))}
             </div>

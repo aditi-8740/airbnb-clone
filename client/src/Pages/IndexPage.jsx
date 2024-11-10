@@ -19,7 +19,7 @@ export default function IndexPage() {
                         <NavLink to={'/places/'+place._id} key={place._id}>
                       <div className="relative w-full h-48 ">
                         <img alt="place" className="absolute top-0 left-0 w-full h-full object-cover rounded-xl "
-                        src={`${process.env.REACT_APP_API_URL}/uploads/${place.photos[0].filename}`} />
+                        src={place.photos[0]} />
                       </div>
                       <div className="mt-3">
                         <h3 className="text-gray-900 title-font text-lg font-medium truncate">{place.title}</h3>

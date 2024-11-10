@@ -10,7 +10,7 @@ const PlacesCard = ({ placesList, setPlacesList }) => {
                 <div className="mr-5 max-w-44 max-h-44 flex-grow shrink-0 ">
                   {place.photos.length > 0 && (
                     <img
-                      src={`http://localhost:8000/uploads/${place.photos[0].filename}`}
+                      src={place.photos[0]}
                       alt="places photos"
                       className="rounded-xl "
                     />
