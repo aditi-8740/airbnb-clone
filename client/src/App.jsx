@@ -13,7 +13,7 @@ import PlacesForm from './Components/PlacesForm.jsx';
 import PlacePage from './Pages/PlacePage.jsx';
 import EachBookingPage from './Pages/EachBookingPage.jsx';
 
-axios.defaults.baseURL = "http://localhost:8000"
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 function App() {
   const router = createBrowserRouter([    //returns a router object, which defines all the routes for your app.
