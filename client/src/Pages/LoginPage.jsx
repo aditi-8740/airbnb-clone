@@ -14,21 +14,20 @@ export default function LoginPage() {
     const handleLoginSubmit = async (event)=>{
         event.preventDefault();
         try {
-            const {data} = await axios.post('/login',{
+            const {data} = await axios.post('/user/login',{
                 email,
                 password
-            },{ withCredentials: true })    //Send Cookies with the Request, receive cookies with response.
+            },{ withCredentials: true })
             
             setisLoggedIn(true);
-            setUser(data);                  //on refreshing the page, the React application reinitializes, and the context state is reset.
-            alert('login successfull')
+            setUser(data);
         } catch (error) {
             console.log('login failed', error.response ? error.response.data : error.message)
         }
     }
     
     if (isLoggedIn) {
-        return <Navigate to="/" replace={true} />  // (return=true)mean user not able to go back to previous tab
+        return <Navigate to="/" replace={true} />  // (replace=true)mean user not able to go back to previous tab
      }
 
     return (

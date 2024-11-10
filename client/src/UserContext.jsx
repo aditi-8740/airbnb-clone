@@ -9,7 +9,7 @@ export function UserContextProvider({children}) {           //children prop pass
     const [ready, setReady] = useState(false)
     useEffect( ()=>{
         if (!user) {
-           axios.get('/profile',{withCredentials: true}).then(({data})=>{
+           axios.get('/user/profile',{withCredentials: true}).then(({data})=>{
                 setUser(data)
                 setReady(true)
            }).catch(()=>{

@@ -15,7 +15,7 @@ function ProfilePage () {
   }
 
   async function handleLogOut() {
-    await axios.post('/logout', {}, { withCredentials: true })  // Add `{}` as the second argument (data)
+    await axios.post('/user/logout', {}, { withCredentials: true })  // Add `{}` as the second argument (data)
     setUser(null)
     navigate('/')
   }

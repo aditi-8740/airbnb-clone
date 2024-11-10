@@ -2,23 +2,21 @@ import { useState } from "react";
 import { Navigate, NavLink } from "react-router-dom";
 import axios from 'axios'
 
-// we want to send a request to our API express app
 export default function LoginPage() {
-    // adding state for our inputs
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [redirect , ssetRedirect] = useState(false)
 
-    async function registerUser(event) {   //want to send a request to our api
-        event.preventDefault();         //prevents form from submitting ,Not reloading page.
-        await axios.post('/register',{    //data we want to send
+    async function registerUser(event) {
+        event.preventDefault();
+        await axios.post('/user/register',{    //user registration data to send
             name,
             email,
             password,
         })
         .then((res)=>{
-            console.log(res)    //resolved value of await axios post request
+            console.log(res)
             console.log(res.data)
         }
             

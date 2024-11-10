@@ -6,7 +6,7 @@ import PlacesCard from "../Components/PlacesCard";
 const UserPlacesPage = () => {
   const [placesList, setPlacesList] = useState([]);
   useEffect(() => {
-   axios.get('/user-places',{ withCredentials: true }).then(({data})=>{      //console.log(data);
+   axios.get('/user/user-places',{ withCredentials: true }).then(({data})=>{      //console.log(data);
     setPlacesList(data);
    })
   }, [])
